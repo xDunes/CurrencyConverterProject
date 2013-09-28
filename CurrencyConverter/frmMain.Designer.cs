@@ -32,8 +32,8 @@
             this.cmbTo = new System.Windows.Forms.ComboBox();
             this.lblFrom = new System.Windows.Forms.Label();
             this.lblTo = new System.Windows.Forms.Label();
-            this.textBox1 = new System.Windows.Forms.TextBox();
-            this.textBox2 = new System.Windows.Forms.TextBox();
+            this.txtTo = new System.Windows.Forms.TextBox();
+            this.txtFrom = new System.Windows.Forms.TextBox();
             this.btnConvert = new System.Windows.Forms.Button();
             this.lblAsOf = new System.Windows.Forms.Label();
             this.SuspendLayout();
@@ -49,11 +49,6 @@
             // cmbTo
             // 
             this.cmbTo.FormattingEnabled = true;
-            this.cmbTo.Items.AddRange(new object[] {
-            "asdf",
-            "asdf",
-            "asdf",
-            "asdf"});
             this.cmbTo.Location = new System.Drawing.Point(263, 51);
             this.cmbTo.Name = "cmbTo";
             this.cmbTo.Size = new System.Drawing.Size(121, 21);
@@ -77,19 +72,21 @@
             this.lblTo.TabIndex = 3;
             this.lblTo.Text = "To:";
             // 
-            // textBox1
+            // txtTo
             // 
-            this.textBox1.Location = new System.Drawing.Point(263, 25);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(121, 20);
-            this.textBox1.TabIndex = 4;
+            this.txtTo.Enabled = false;
+            this.txtTo.Location = new System.Drawing.Point(263, 25);
+            this.txtTo.Name = "txtTo";
+            this.txtTo.Size = new System.Drawing.Size(121, 20);
+            this.txtTo.TabIndex = 4;
             // 
-            // textBox2
+            // txtFrom
             // 
-            this.textBox2.Location = new System.Drawing.Point(12, 25);
-            this.textBox2.Name = "textBox2";
-            this.textBox2.Size = new System.Drawing.Size(121, 20);
-            this.textBox2.TabIndex = 5;
+            this.txtFrom.Location = new System.Drawing.Point(12, 25);
+            this.txtFrom.Name = "txtFrom";
+            this.txtFrom.Size = new System.Drawing.Size(121, 20);
+            this.txtFrom.TabIndex = 5;
+            this.txtFrom.Text = "1";
             // 
             // btnConvert
             // 
@@ -117,8 +114,8 @@
             this.ClientSize = new System.Drawing.Size(398, 106);
             this.Controls.Add(this.lblAsOf);
             this.Controls.Add(this.btnConvert);
-            this.Controls.Add(this.textBox2);
-            this.Controls.Add(this.textBox1);
+            this.Controls.Add(this.txtFrom);
+            this.Controls.Add(this.txtTo);
             this.Controls.Add(this.lblTo);
             this.Controls.Add(this.lblFrom);
             this.Controls.Add(this.cmbTo);
@@ -137,8 +134,8 @@
         private System.Windows.Forms.ComboBox cmbTo;
         private System.Windows.Forms.Label lblFrom;
         private System.Windows.Forms.Label lblTo;
-        private System.Windows.Forms.TextBox textBox1;
-        private System.Windows.Forms.TextBox textBox2;
+        private System.Windows.Forms.TextBox txtTo;
+        private System.Windows.Forms.TextBox txtFrom;
         private System.Windows.Forms.Button btnConvert;
         private System.Windows.Forms.Label lblAsOf;
     }
