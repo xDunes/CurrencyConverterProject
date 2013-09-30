@@ -57,10 +57,13 @@ namespace CurrencyConverter
             {
                 foreach (CurrencyClass currencyTo in alCurrencyNames)
                 {
-                    RateClass rate = getSingleConversionRate(currencyFrom, currencyTo, false);
-                    if (rate != null)
+                    if (!currencyFrom.getShortName().Equals(currencyTo.getShortName()))
                     {
-                        clsDB.saveRate(rate);
+                        RateClass rate = getSingleConversionRate(currencyFrom, currencyTo, false);
+                        if (rate != null)
+                        {
+                            clsDB.saveRate(rate);
+                        }
                     }
                 }
             }
