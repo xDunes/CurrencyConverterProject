@@ -25,19 +25,15 @@ namespace CurrencyConverter
             webParser = new WebParserClass();
             alCurrencyNames = webParser.getCurrencyNames();
             updateComboBoxes();
+            webParser.getAllConversionRates(alCurrencyNames);
         }
 
         private void btnConvert_Click(object sender, EventArgs e)
         {
-            Debug.WriteLine("Getting ccFrom");
             CurrencyClass ccFrom = new CurrencyClass((string)((ComboboxItem)cmbFrom.SelectedItem).Value, ((ComboboxItem)cmbFrom.SelectedItem).Text);
-            Debug.WriteLine("Getting ccTo");
             CurrencyClass ccTo = new CurrencyClass((string)((ComboboxItem)cmbTo.SelectedItem).Value, ((ComboboxItem)cmbTo.SelectedItem).Text);
-            Debug.WriteLine("Getting rate");
-            RateClass rate = webParser.getSingleConversionRate(ccFrom, ccTo);
-            Debug.WriteLine("Calculating Conversion");
+            RateClass rate = webParser.getSingleConversionRate(ccFrom, ccTo, true);
             txtTo.Text = ""+(Convert.ToDouble(txtFrom.Text) * rate.getRate());
-            Debug.WriteLine("Setting AsOf");
             lblAsOf.Text = "As Of " + rate.getTimeDate().ToString();
             
         }

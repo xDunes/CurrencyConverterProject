@@ -16,6 +16,7 @@ namespace CurrencyConverter
         DatabaseClass clsDB;
         public WebParserClass()
         {
+            ServicePointManager.DefaultConnectionLimit = 1000;
             clsDB = new DatabaseClass();
         }
         public ArrayList getCurrencyNames()
@@ -56,7 +57,7 @@ namespace CurrencyConverter
             {
                 foreach (CurrencyClass currencyTo in alCurrencyNames)
                 {
-                    RateClass rate = getSingleConversionRate(currencyFrom, currencyTo);
+                    RateClass rate = getSingleConversionRate(currencyFrom, currencyTo, false);
                     if (rate != null)
                     {
                         clsDB.saveRate(rate);
@@ -64,32 +65,32 @@ namespace CurrencyConverter
                 }
             }
 		}
-        public RateClass getSingleConversionRate(CurrencyClass ccFrom, CurrencyClass ccTo)
+        public RateClass getSingleConversionRate(CurrencyClass ccFrom, CurrencyClass ccTo, bool useDB)
         {
             RateClass rate=null;
-            Regex regexRate = new Regex("[0-9]*\\.[0-9]*");
-            Debug.WriteLine("Creating request");
+            Regex regexRate = new Regex("bld>([0-9]*\\.?[0-9]*)");
             WebRequest request = WebRequest.Create("https://www.google.com/finance/converter?a=1&from=" + ccFrom.getShortName() + "&to=" + ccTo.getShortName());
-            Debug.WriteLine("Getting Response");
             WebResponse response = request.GetResponse();
-            Debug.WriteLine("Setting up a stream");
             Stream data = response.GetResponseStream();
             string html = String.Empty;
-            Debug.WriteLine("Setting up a reader");
             StreamReader reader = new StreamReader(data);
-            Debug.WriteLine("Start Parsing!");
             while (reader.Peek() >= 0)
             {
                 html = reader.ReadLine();
                 if (html.Contains("span class=bld"))
                 {
-                    //Debug.WriteLine(html);
                     Match matchRate = regexRate.Match(html);
-                    //Debug.WriteLine("Found span: " + matchRate.Groups[0].Value);
-                    rate = new RateClass(ccFrom,ccTo,Convert.ToDouble(matchRate.Groups[0].Value),DateTime.Now);
+                    if (matchRate.Success)
+                    {
+                        Debug.WriteLine("Rate from " + ccFrom.getShortName() + " to " + ccTo.getShortName() + " is " + matchRate.Groups[1].Value);
+                        rate = new RateClass(ccFrom, ccTo, Convert.ToDouble(matchRate.Groups[1].Value), DateTime.Now);
+                    }
                 }
             }
-            Debug.WriteLine("Finished Parsing!");
+            if (rate == null && useDB)
+            {
+                rate = clsDB.getSingleConversionRate(ccFrom, ccTo);
+            }
             return rate;
         }
     }
