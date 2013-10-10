@@ -14,9 +14,47 @@ namespace CurrencyConverter
     class DatabaseClass
     {
         private OleDbConnection MyConn;
-        private string path = @"Database path";
+        private string path = @"Database path";//add database path later
         public void saveRate(RateClass rate)
         {
+            CurrencyClass ccFrom = rate.getFrom();
+            CurrencyClass ccTo = rate.getTo();
+            int Status = InitDatabase();
+            switch (Status)
+            {
+                case 0: case 1: case 2:
+                    {
+                        //Sucess
+                        try
+                        {
+                            string insert = "INSERT into CurrencyConverter (CurFromLong, CurFromShort, CurToLong, CurToShort, Rate, DateTime) VALUES (@CurFromLong, @CurFromShort, @CurToLong, @CurToShort, @Rate, @DateTime)";
+                            OleDbCommand cmd = new OleDbCommand(insert, MyConn);
+                            cmd.Parameters.Add("@CurFromLong", ccFrom.getLongName());
+                            cmd.Parameters.Add("@CurFromShort", ccFrom.getShortName());
+                            cmd.Parameters.Add("@CurToLong", ccTo.getLongName());
+                            cmd.Parameters.Add("@CurToShort", ccTo.getShortName());
+                            cmd.Parameters.Add("@Rate", rate.getRate().ToString());
+                            cmd.Parameters.Add("@DateTime", rate.getTimeDate().ToString());
+                            cmd.ExecuteNonQuery();
+                            //return successful
+                        }
+                        catch
+                        {
+                            //return failed
+                        }
+                        break;
+                    }
+                case 3: case 4: case 5:
+                    {
+                        //Errors. returns Empty ArrayList
+                        break;
+                    }
+                default:
+                    {
+                        //Unexpected error. Returns Empty ArrayList
+                        break;
+                    }
+            }
         }
         public RateClass getSingleConversionRate(CurrencyClass ccFrom, CurrencyClass ccTo)
         {
@@ -45,6 +83,7 @@ namespace CurrencyConverter
                             }
                             rate = new RateClass(ccFrom, ccTo, rateVal, dateAdded);
                         }
+                        MyConn.Close();
                         break;
                     }
                 case 3: case 4: case 5:
@@ -63,6 +102,34 @@ namespace CurrencyConverter
         public ArrayList getCurrencyNames()
         {
             ArrayList tempArray = new ArrayList();
+            int Status = InitDatabase();
+            switch (Status)
+            {
+                case 0: case 1: case 2:
+                    {
+                        //Sucess
+                        string CommandString = "Select * from CurrencyConverter";
+                        OleDbCommand cmd = new OleDbCommand(CommandString, MyConn);
+                        OleDbDataReader reader = cmd.ExecuteReader();
+
+                        while (reader.Read())
+                        {
+                            tempArray.Add(reader["CurFromLong"].ToString());
+                        }
+                        MyConn.Close();
+                        break;
+                    }
+                case 3: case 4: case 5:
+                    {
+                        //Errors. returns Empty ArrayList
+                        break;
+                    }
+                default:
+                    {
+                        //Unexpected error. Returns Empty ArrayList
+                        break;
+                    }
+            }
             return tempArray;
         }
 
