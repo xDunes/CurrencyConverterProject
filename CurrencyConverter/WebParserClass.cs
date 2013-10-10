@@ -54,44 +54,26 @@ namespace CurrencyConverter
 		    return tempArray;
 	    }
         public void getAllConversionRates(ArrayList alCurrencyNames){
-            
+            Thread thread = new Thread(() => threadAllConversionRates(alCurrencyNames));
+            thread.Start();
 		}
-        public void queueAllConversionRates(ArrayList alCurrencyNames)
+        private void threadAllConversionRates(ArrayList alCurrencyNames)
         {
-            ArrayList unsafeRateList = new ArrayList();
-            ArrayList safeRateList = ArrayList.Synchronized(unsafeRateList);
-            ManualResetEvent doneEvent = new ManualResetEvent(false);
-            int numberOfTasks = alCurrencyNames.Count;
             foreach (CurrencyClass currencyFrom in alCurrencyNames)
             {
-                ThreadPool.QueueUserWorkItem(delegate {
-                    try
+                    foreach (CurrencyClass currencyTo in alCurrencyNames)
                     {
-                        foreach (CurrencyClass currencyTo in alCurrencyNames)
+                        if (!currencyFrom.getShortName().Equals(currencyTo.getShortName()))
                         {
-                            if (!currencyFrom.getShortName().Equals(currencyTo.getShortName()))
+                            RateClass rate = getSingleConversionRate(currencyFrom, currencyTo, false);
+                            if (rate != null)
                             {
-                                RateClass rate = getSingleConversionRate(currencyFrom, currencyTo, false);
-                                if (rate != null)
-                                {
-                                    safeRateList.Add(rate);
-                                }
-                            
+                                clsDB.saveRate(rate);
                             }
                         }
                     }
-                    finally
-                    {
-                        if (Interlocked.Decrement(ref numberOfTasks) == 0)
-                        {
-                            Debug.WriteLine("Threads Left: " + numberOfTasks);
-                            doneEvent.Set();
-                        }
-                    }
-                });
             }
-            doneEvent.WaitOne();
-            clsDB.saveAllRates(safeRateList);
+            
         }
         public RateClass getSingleConversionRate(CurrencyClass ccFrom, CurrencyClass ccTo, bool useDB)
         {

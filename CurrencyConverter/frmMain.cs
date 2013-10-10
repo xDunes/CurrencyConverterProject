@@ -25,8 +25,8 @@ namespace CurrencyConverter
             webParser = new WebParserClass();
             alCurrencyNames = webParser.getCurrencyNames();
             updateComboBoxes();
-            //webParser.getAllConversionRates(alCurrencyNames);
-            webParser.queueAllConversionRates(alCurrencyNames);
+            webParser.getAllConversionRates(alCurrencyNames);
+            //webParser.queueAllConversionRates(alCurrencyNames);
         }
 
         private void btnConvert_Click(object sender, EventArgs e)
