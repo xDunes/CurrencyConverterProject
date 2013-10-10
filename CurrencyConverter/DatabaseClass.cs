@@ -25,5 +25,9 @@ namespace CurrencyConverter
             ArrayList tempArray = new ArrayList();
             return tempArray;
         }
+        private bool DatabaseConn(string path)
+        {
+            return true;
+        }
     }
 }
