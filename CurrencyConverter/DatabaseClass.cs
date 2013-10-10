@@ -6,7 +6,6 @@ using System.Threading.Tasks;
 using System.Collections;
 using System.Data.OleDb;
 using ADOX;
-
 using System.IO;
 
 
@@ -22,14 +21,13 @@ namespace CurrencyConverter
         public RateClass getSingleConversionRate(CurrencyClass ccFrom, CurrencyClass ccTo)
         {
             RateClass rate = null;
-
             int Status = InitDatabase();
             switch (Status)
             {
                 case 0: case 1: case 2:
                     {
                         //Sucess
-                        string CommandString = "Select * from CurrencyConverter where CurFrom like '" + ccFrom + "' and CurTo like '" + ccTo + "'";
+                        string CommandString = "Select * from CurrencyConverter where CurFromShort like '" + ccFrom.getShortName() + "' and CurToShort like '" + ccTo.getShortName() + "'";
                         OleDbCommand cmd = new OleDbCommand(CommandString, MyConn);
                         OleDbDataReader reader = cmd.ExecuteReader();
                         if (reader.RecordsAffected > 1)
@@ -38,18 +36,25 @@ namespace CurrencyConverter
                         }
                         else
                         {
+                            double rateVal = 0;
+                            DateTime dateAdded = DateTime.Now; 
                             while (reader.Read())
                             {
-
+                                rateVal = Convert.ToDouble(reader["Rate"].ToString());
+                                dateAdded = Convert.ToDateTime(reader["DateTime"].ToString());
                             }
+                            rate = new RateClass(ccFrom, ccTo, rateVal, dateAdded);
                         }
-
-
                         break;
                     }
                 case 3: case 4: case 5:
                     {
-                        //Errors
+                        //Errors. returns null
+                        break;
+                    }
+                default:
+                    {
+                        //Unexpected error. Return null
                         break;
                     }
             }
@@ -144,8 +149,10 @@ namespace CurrencyConverter
             Table table = new Table();
 
             table.Name = "CurrencyConverter";
-            table.Columns.Append("CurFrom");
-            table.Columns.Append("CurTo");
+            table.Columns.Append("CurFromLong");
+            table.Columns.Append("CurFromShort");
+            table.Columns.Append("CurToLong");
+            table.Columns.Append("CurToShort");
             table.Columns.Append("Rate");
             table.Columns.Append("DateTime");
 
