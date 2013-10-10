@@ -68,7 +68,16 @@ namespace CurrencyConverter
                             RateClass rate = getSingleConversionRate(currencyFrom, currencyTo, false);
                             if (rate != null)
                             {
-                                clsDB.saveRate(rate);
+                                //Marty, I added this because we need to have error checking in case SaveRate can't access the database for any reason. We can discuss tommorrow or change back if needed
+                                //****************************************************************************************************
+                                bool status = clsDB.saveRate(rate);
+                                if (status == false)
+                                {
+                                    //database class will return false if errors occured. Need to handle here
+                                }
+                                //****************************************************************************************************
+                                //We will need to decide how we are going to handle a 'false' return. Obviously we dont want it to keep iterating through the loop so we will have to break out and return an 
+                                //error of some sort. Again, we can discuss tommorrow or change back if needed
                             }
                         }
                     }

@@ -15,8 +15,9 @@ namespace CurrencyConverter
     {
         private OleDbConnection MyConn;
         private string path = @"Database path";//add database path later
-        public void saveRate(RateClass rate)
+        public bool saveRate(RateClass rate)
         {
+            bool Successful = false;
             CurrencyClass ccFrom = rate.getFrom();
             CurrencyClass ccTo = rate.getTo();
             int Status = InitDatabase();
@@ -36,25 +37,27 @@ namespace CurrencyConverter
                             cmd.Parameters.Add("@Rate", rate.getRate().ToString());
                             cmd.Parameters.Add("@DateTime", rate.getTimeDate().ToString());
                             cmd.ExecuteNonQuery();
-                            //return successful
+                            Successful = true;
+                            MyConn.Close();
                         }
                         catch
                         {
-                            //return failed
+                            //returns false
                         }
                         break;
                     }
                 case 3: case 4: case 5:
                     {
-                        //Errors. returns Empty ArrayList
+                        //Errors. returns false
                         break;
                     }
                 default:
                     {
-                        //Unexpected error. Returns Empty ArrayList
+                        //Unexpected error. Returns false
                         break;
                     }
             }
+            return Successful;
         }
         public RateClass getSingleConversionRate(CurrencyClass ccFrom, CurrencyClass ccTo)
         {
