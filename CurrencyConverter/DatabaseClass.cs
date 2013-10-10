@@ -12,6 +12,9 @@ namespace CurrencyConverter
         public void saveRate(RateClass rate)
         {
         }
+        public void saveAllRates(ArrayList rateList)
+        {
+        }
         public RateClass getSingleConversionRate(CurrencyClass ccFrom, CurrencyClass ccTo)
         {
             RateClass rate = null;

@@ -8,6 +8,7 @@ using System.Net;
 using System.IO;
 using System.Text.RegularExpressions;
 using System.Diagnostics;
+using System.Threading;
 
 namespace CurrencyConverter
 {
@@ -16,9 +17,9 @@ namespace CurrencyConverter
         DatabaseClass clsDB;
         public WebParserClass()
         {
-            ServicePointManager.DefaultConnectionLimit = 1000;
+            ServicePointManager.DefaultConnectionLimit = 10000;
             clsDB = new DatabaseClass();
-        }
+        }//WebParserClass
         public ArrayList getCurrencyNames()
         {
             Regex regexOPTION=new Regex("</?\\w+\\s+\\w+=\"(.*)\">(.*)</\\w+>");
@@ -53,43 +54,72 @@ namespace CurrencyConverter
 		    return tempArray;
 	    }
         public void getAllConversionRates(ArrayList alCurrencyNames){
+            
+		}
+        public void queueAllConversionRates(ArrayList alCurrencyNames)
+        {
+            ArrayList unsafeRateList = new ArrayList();
+            ArrayList safeRateList = ArrayList.Synchronized(unsafeRateList);
+            ManualResetEvent doneEvent = new ManualResetEvent(false);
+            int numberOfTasks = alCurrencyNames.Count;
             foreach (CurrencyClass currencyFrom in alCurrencyNames)
             {
-                foreach (CurrencyClass currencyTo in alCurrencyNames)
-                {
-                    if (!currencyFrom.getShortName().Equals(currencyTo.getShortName()))
+                ThreadPool.QueueUserWorkItem(delegate {
+                    try
                     {
-                        RateClass rate = getSingleConversionRate(currencyFrom, currencyTo, false);
-                        if (rate != null)
+                        foreach (CurrencyClass currencyTo in alCurrencyNames)
                         {
-                            clsDB.saveRate(rate);
+                            if (!currencyFrom.getShortName().Equals(currencyTo.getShortName()))
+                            {
+                                RateClass rate = getSingleConversionRate(currencyFrom, currencyTo, false);
+                                if (rate != null)
+                                {
+                                    safeRateList.Add(rate);
+                                }
+                            
+                            }
+                        }
+                    }
+                    finally
+                    {
+                        if (Interlocked.Decrement(ref numberOfTasks) == 0)
+                        {
+                            Debug.WriteLine("Threads Left: " + numberOfTasks);
+                            doneEvent.Set();
+                        }
+                    }
+                });
+            }
+            doneEvent.WaitOne();
+            clsDB.saveAllRates(safeRateList);
+        }
+        public RateClass getSingleConversionRate(CurrencyClass ccFrom, CurrencyClass ccTo, bool useDB)
+        {
+            RateClass rate=null;
+            try
+            {
+                Regex regexRate = new Regex("bld>([0-9]*\\.?[0-9]*)");
+                WebRequest request = WebRequest.Create("https://www.google.com/finance/converter?a=1&from=" + ccFrom.getShortName() + "&to=" + ccTo.getShortName());
+                WebResponse response = request.GetResponse();
+                Stream data = response.GetResponseStream();
+                string html = String.Empty;
+                StreamReader reader = new StreamReader(data);
+                while (reader.Peek() >= 0)
+                {
+                    html = reader.ReadLine();
+                    if (html.Contains("span class=bld"))
+                    {
+                        Match matchRate = regexRate.Match(html);
+                        if (matchRate.Success)
+                        {
+                            //Debug.WriteLine("Rate from " + ccFrom.getShortName() + " to " + ccTo.getShortName() + " is " + matchRate.Groups[1].Value);
+                            rate = new RateClass(ccFrom, ccTo, Convert.ToDouble(matchRate.Groups[1].Value), DateTime.Now);
                         }
                     }
                 }
             }
-		}
-        public RateClass getSingleConversionRate(CurrencyClass ccFrom, CurrencyClass ccTo, bool useDB)
-        {
-            RateClass rate=null;
-            Regex regexRate = new Regex("bld>([0-9]*\\.?[0-9]*)");
-            WebRequest request = WebRequest.Create("https://www.google.com/finance/converter?a=1&from=" + ccFrom.getShortName() + "&to=" + ccTo.getShortName());
-            WebResponse response = request.GetResponse();
-            Stream data = response.GetResponseStream();
-            string html = String.Empty;
-            StreamReader reader = new StreamReader(data);
-            while (reader.Peek() >= 0)
-            {
-                html = reader.ReadLine();
-                if (html.Contains("span class=bld"))
-                {
-                    Match matchRate = regexRate.Match(html);
-                    if (matchRate.Success)
-                    {
-                        Debug.WriteLine("Rate from " + ccFrom.getShortName() + " to " + ccTo.getShortName() + " is " + matchRate.Groups[1].Value);
-                        rate = new RateClass(ccFrom, ccTo, Convert.ToDouble(matchRate.Groups[1].Value), DateTime.Now);
-                    }
-                }
-            }
+            catch { }
+
             if (rate == null && useDB)
             {
                 rate = clsDB.getSingleConversionRate(ccFrom, ccTo);
