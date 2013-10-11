@@ -49,7 +49,7 @@
             // cmbTo
             // 
             this.cmbTo.FormattingEnabled = true;
-            this.cmbTo.Location = new System.Drawing.Point(263, 51);
+            this.cmbTo.Location = new System.Drawing.Point(299, 51);
             this.cmbTo.Name = "cmbTo";
             this.cmbTo.Size = new System.Drawing.Size(200, 21);
             this.cmbTo.TabIndex = 1;
@@ -66,7 +66,7 @@
             // lblTo
             // 
             this.lblTo.AutoSize = true;
-            this.lblTo.Location = new System.Drawing.Point(260, 9);
+            this.lblTo.Location = new System.Drawing.Point(296, 9);
             this.lblTo.Name = "lblTo";
             this.lblTo.Size = new System.Drawing.Size(23, 13);
             this.lblTo.TabIndex = 3;
@@ -75,7 +75,7 @@
             // txtTo
             // 
             this.txtTo.Enabled = false;
-            this.txtTo.Location = new System.Drawing.Point(263, 25);
+            this.txtTo.Location = new System.Drawing.Point(299, 25);
             this.txtTo.Name = "txtTo";
             this.txtTo.Size = new System.Drawing.Size(200, 20);
             this.txtTo.TabIndex = 4;
@@ -90,7 +90,7 @@
             // 
             // btnConvert
             // 
-            this.btnConvert.Location = new System.Drawing.Point(157, 34);
+            this.btnConvert.Location = new System.Drawing.Point(218, 35);
             this.btnConvert.Name = "btnConvert";
             this.btnConvert.Size = new System.Drawing.Size(75, 23);
             this.btnConvert.TabIndex = 6;
@@ -101,7 +101,7 @@
             // lblAsOf
             // 
             this.lblAsOf.AutoSize = true;
-            this.lblAsOf.Location = new System.Drawing.Point(249, 81);
+            this.lblAsOf.Location = new System.Drawing.Point(382, 85);
             this.lblAsOf.Name = "lblAsOf";
             this.lblAsOf.Size = new System.Drawing.Size(146, 13);
             this.lblAsOf.TabIndex = 7;
@@ -111,7 +111,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(400, 107);
+            this.ClientSize = new System.Drawing.Size(540, 107);
             this.Controls.Add(this.lblAsOf);
             this.Controls.Add(this.btnConvert);
             this.Controls.Add(this.txtFrom);
