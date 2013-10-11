@@ -7,6 +7,8 @@ using System.Collections;
 using System.Data.OleDb;
 using ADOX;
 using System.IO;
+using System.Diagnostics;
+using System.Threading;
 
 
 namespace CurrencyConverter
@@ -16,7 +18,6 @@ namespace CurrencyConverter
 
         private OleDbConnection MyConn;
         static private string ProgramData = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + "\\CurrencyConverter";
-        
         private string path = ProgramData + "\\CurrencyDB.mdb";//add database path later
         public bool saveRate(RateClass rate)
         {
@@ -41,10 +42,11 @@ namespace CurrencyConverter
                             cmd.Parameters.AddWithValue("@DateTime", rate.getTimeDate().ToString());
                             cmd.ExecuteNonQuery();
                             Successful = true;
-                            MyConn.Close();
+                            //MyConn.Close();
                         }
-                        catch
+                        catch(Exception ex)
                         {
+                            Debug.WriteLine(Environment.NewLine + ex.ToString() + Environment.NewLine + "2");
                             //returns false
                         }
                         break;
@@ -89,7 +91,7 @@ namespace CurrencyConverter
                             }
                             rate = new RateClass(ccFrom, ccTo, rateVal, dateAdded);
                         }
-                        MyConn.Close();
+                        //MyConn.Close();
                         break;
                     }
                 case 3: case 4: case 5:
@@ -156,11 +158,12 @@ namespace CurrencyConverter
         {
             bool ConnStatus = false; //true if connected, false if connection failed
             int returnCode = 0;
-            String ConnString = @"Provider=Provider=Microsoft.Jet.OLEDB.4.0;Data Source=" + path + ";"; 
+            String ConnString = @"Provider=Microsoft.Jet.OLEDB.4.0;Data Source=" + path + ";"; 
             //Check to see if database file exists
             if (File.Exists(path))
             {
                 ConnStatus = OpenDatabaseConn(ConnString);
+                Debug.WriteLine(ConnStatus);
                 if (ConnStatus == true)
                 {
                     returnCode = 0;
@@ -171,8 +174,9 @@ namespace CurrencyConverter
                     {
                         File.Delete(path);
                     }
-                    catch
+                    catch (Exception ex)
                     {
+                        
                         returnCode = 4;
                     }
                     if (returnCode != 4)
@@ -223,9 +227,8 @@ namespace CurrencyConverter
                 Directory.CreateDirectory(ProgramData);
             }
             //Code to create Database
-            Catalog cat = new Catalog();
+            
             Table table = new Table();
-
             table.Name = "CurrencyConverter";
             table.Columns.Append("CurFromLong");
             table.Columns.Append("CurFromShort");
@@ -236,7 +239,8 @@ namespace CurrencyConverter
 
             try
             {
-                string CreateString = "Provider=Microsoft.Jet.OLEDB.4.0;DataSource=" + path + ";Jet OLEDB:Engine Type=5";
+                string CreateString = "Provider=Microsoft.Jet.OLEDB.4.0;" + "Data Source=" + path + ";" + "Jet OLEDB:Engine Type=5";
+                Catalog cat = new Catalog();
                 cat.Create(CreateString);
                 cat.Tables.Append(table);
 
@@ -248,9 +252,9 @@ namespace CurrencyConverter
                 }
                 return true;
             }
-            catch
+            catch (Exception ex)
             {
-
+                Debug.WriteLine(Environment.NewLine + ex.ToString() + Environment.NewLine);
                 return false;
             }
         }
@@ -260,10 +264,12 @@ namespace CurrencyConverter
             try
             {
                 MyConn = new OleDbConnection(ConnString);
+                MyConn.Open();
                 return true;
             }
-            catch
+            catch (Exception ex)
             {
+                Debug.WriteLine(Environment.NewLine + ex.ToString() + Environment.NewLine);
                 //Exception caught. Failed to connect to database
                 return false;
             }
