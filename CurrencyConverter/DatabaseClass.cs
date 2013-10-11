@@ -18,7 +18,7 @@ namespace CurrencyConverter
 
         private OleDbConnection MyConn;
         static private string ProgramData = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + "\\CurrencyConverter";
-        private string path = ProgramData + "\\CurrencyDB.mdb";//add database path later
+        private string path = ProgramData + "\\CurrencyDB.accdb";//add database path later
         public bool saveRate(RateClass rate)
         {
             bool Successful = false;
@@ -32,7 +32,7 @@ namespace CurrencyConverter
                         //Sucess
                         try
                         {
-                            string insert = "INSERT into CurrencyConverter (CurFromLong, CurFromShort, CurToLong, CurToShort, Rate, DateTime) VALUES (@CurFromLong, @CurFromShort, @CurToLong, @CurToShort, @Rate, @DateTime)";
+                            string insert = "INSERT INTO CurrencyConverter ([CurFromLong], [CurFromShort], [CurToLong], [CurToShort], [Rate], [DateTime]) VALUES (@CurFromLong, @CurFromShort, @CurToLong, @CurToShort, @Rate, @DateTime);";
                             OleDbCommand cmd = new OleDbCommand(insert, MyConn);
                             cmd.Parameters.AddWithValue("@CurFromLong", ccFrom.getLongName());
                             cmd.Parameters.AddWithValue("@CurFromShort", ccFrom.getShortName());
@@ -42,11 +42,11 @@ namespace CurrencyConverter
                             cmd.Parameters.AddWithValue("@DateTime", rate.getTimeDate().ToString());
                             cmd.ExecuteNonQuery();
                             Successful = true;
-                            //MyConn.Close();
+                            MyConn.Close();
                         }
                         catch(Exception ex)
                         {
-                            Debug.WriteLine(Environment.NewLine + ex.ToString() + Environment.NewLine + "2");
+                            Debug.WriteLine(Environment.NewLine + ex.ToString() + Environment.NewLine);
                             //returns false
                         }
                         break;
@@ -91,7 +91,7 @@ namespace CurrencyConverter
                             }
                             rate = new RateClass(ccFrom, ccTo, rateVal, dateAdded);
                         }
-                        //MyConn.Close();
+                        MyConn.Close();
                         break;
                     }
                 case 3: case 4: case 5:
