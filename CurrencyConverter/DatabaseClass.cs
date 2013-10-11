@@ -110,6 +110,7 @@ namespace CurrencyConverter
         public ArrayList getCurrencyNames()
         {
             ArrayList tempArray = new ArrayList();
+            ArrayList returnArray = new ArrayList();
             int Status = InitDatabase();
             switch (Status)
             {
@@ -122,7 +123,18 @@ namespace CurrencyConverter
 
                         while (reader.Read())
                         {
-                            tempArray.Add(reader["CurFromLong"].ToString());
+                            CurrencyClass ccFrom = new CurrencyClass(reader["CurFromShort"].ToString(), reader["CurFromLong"].ToString());
+                            CurrencyClass ccTo = new CurrencyClass(reader["CurToShort"].ToString(), reader["CurToLong"].ToString());
+                            tempArray.Add(ccFrom);
+                            tempArray.Add(ccTo);
+                        }
+
+                        foreach (CurrencyClass cc in tempArray)
+                        {
+                            if (!returnArray.Contains(cc))
+                            {
+                                returnArray.Add(cc);
+                            }
                         }
                         MyConn.Close();
                         break;
@@ -138,7 +150,7 @@ namespace CurrencyConverter
                         break;
                     }
             }
-            return tempArray;
+            return returnArray;
         }
 
         //Check for database and attempts to connect to it. Returns int to define status. Creates database if non-existant
@@ -163,7 +175,6 @@ namespace CurrencyConverter
             if (File.Exists(path))
             {
                 ConnStatus = OpenDatabaseConn(ConnString);
-                Debug.WriteLine(ConnStatus);
                 if (ConnStatus == true)
                 {
                     returnCode = 0;
