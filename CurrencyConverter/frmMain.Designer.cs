@@ -79,6 +79,7 @@
             this.txtTo.Name = "txtTo";
             this.txtTo.Size = new System.Drawing.Size(200, 20);
             this.txtTo.TabIndex = 4;
+            this.txtTo.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             // 
             // txtFrom
             // 
@@ -87,6 +88,7 @@
             this.txtFrom.Size = new System.Drawing.Size(200, 20);
             this.txtFrom.TabIndex = 5;
             this.txtFrom.Text = "1";
+            this.txtFrom.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             // 
             // btnConvert
             // 
