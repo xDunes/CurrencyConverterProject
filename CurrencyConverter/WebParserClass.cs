@@ -101,11 +101,11 @@ namespace CurrencyConverter
             }
             catch { }
 
-            if (rate == null && useDB)
+            if (rate == null)
             {
                 rate = clsDB.getSingleConversionRate(ccFrom, ccTo);
-            }
-            else
+            } 
+            else if (useDB)
             {
                 clsDB.saveRate(rate);
             }
