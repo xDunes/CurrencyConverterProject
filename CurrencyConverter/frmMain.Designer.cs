@@ -111,7 +111,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(398, 106);
+            this.ClientSize = new System.Drawing.Size(400, 107);
             this.Controls.Add(this.lblAsOf);
             this.Controls.Add(this.btnConvert);
             this.Controls.Add(this.txtFrom);
@@ -120,7 +120,10 @@
             this.Controls.Add(this.lblFrom);
             this.Controls.Add(this.cmbTo);
             this.Controls.Add(this.cmbFrom);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.MaximizeBox = false;
             this.Name = "frmMain";
+            this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
             this.Text = "Currency Converter";
             this.Load += new System.EventHandler(this.frmMain_Load);
             this.ResumeLayout(false);

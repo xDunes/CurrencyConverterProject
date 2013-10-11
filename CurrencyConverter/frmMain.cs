@@ -24,8 +24,15 @@ namespace CurrencyConverter
         {
             webParser = new WebParserClass();
             alCurrencyNames = webParser.getCurrencyNames();
-            updateComboBoxes();
-            webParser.getAllConversionRates(alCurrencyNames);
+            if (alCurrencyNames.Count != 0)
+            {
+                updateComboBoxes();
+                webParser.getAllConversionRates(alCurrencyNames);
+            }
+            else
+            {
+                MessageBox.Show("error");
+            }
             //webParser.queueAllConversionRates(alCurrencyNames);
         }
 
@@ -34,8 +41,15 @@ namespace CurrencyConverter
             CurrencyClass ccFrom = new CurrencyClass((string)((ComboboxItem)cmbFrom.SelectedItem).Value, ((ComboboxItem)cmbFrom.SelectedItem).Text);
             CurrencyClass ccTo = new CurrencyClass((string)((ComboboxItem)cmbTo.SelectedItem).Value, ((ComboboxItem)cmbTo.SelectedItem).Text);
             RateClass rate = webParser.getSingleConversionRate(ccFrom, ccTo, true);
-            txtTo.Text = ""+(Convert.ToDouble(txtFrom.Text) * rate.getRate());
-            lblAsOf.Text = "As Of " + rate.getTimeDate().ToString();
+            if (rate != null)
+            {
+                txtTo.Text = "" + (Convert.ToDouble(txtFrom.Text) * rate.getRate());
+                lblAsOf.Text = "As Of " + rate.getTimeDate().ToString();
+            }
+            else
+            {
+                MessageBox.Show("ERROR:  Could not retrieve rate for " + ccFrom.getShortName() + " to " + ccTo.getShortName() + " conversion rate at this time!");
+            }
             
         }
         private void updateComboBoxes()
