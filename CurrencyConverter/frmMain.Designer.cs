@@ -43,7 +43,7 @@
             this.cmbFrom.FormattingEnabled = true;
             this.cmbFrom.Location = new System.Drawing.Point(12, 51);
             this.cmbFrom.Name = "cmbFrom";
-            this.cmbFrom.Size = new System.Drawing.Size(121, 21);
+            this.cmbFrom.Size = new System.Drawing.Size(200, 21);
             this.cmbFrom.TabIndex = 0;
             // 
             // cmbTo
@@ -51,7 +51,7 @@
             this.cmbTo.FormattingEnabled = true;
             this.cmbTo.Location = new System.Drawing.Point(263, 51);
             this.cmbTo.Name = "cmbTo";
-            this.cmbTo.Size = new System.Drawing.Size(121, 21);
+            this.cmbTo.Size = new System.Drawing.Size(200, 21);
             this.cmbTo.TabIndex = 1;
             // 
             // lblFrom
@@ -77,14 +77,14 @@
             this.txtTo.Enabled = false;
             this.txtTo.Location = new System.Drawing.Point(263, 25);
             this.txtTo.Name = "txtTo";
-            this.txtTo.Size = new System.Drawing.Size(121, 20);
+            this.txtTo.Size = new System.Drawing.Size(200, 20);
             this.txtTo.TabIndex = 4;
             // 
             // txtFrom
             // 
             this.txtFrom.Location = new System.Drawing.Point(12, 25);
             this.txtFrom.Name = "txtFrom";
-            this.txtFrom.Size = new System.Drawing.Size(121, 20);
+            this.txtFrom.Size = new System.Drawing.Size(200, 20);
             this.txtFrom.TabIndex = 5;
             this.txtFrom.Text = "1";
             // 
