@@ -30,24 +30,45 @@ namespace CurrencyConverter
                 case 0: case 1: case 2:
                     {
                         //Sucess
-                        try
+                        if (checkForDuplicate(rate) == false)
                         {
-                            string insert = "INSERT INTO CurrencyConverter ([CurFromLong], [CurFromShort], [CurToLong], [CurToShort], [Rate], [DateTime]) VALUES (@CurFromLong, @CurFromShort, @CurToLong, @CurToShort, @Rate, @DateTime);";
-                            OleDbCommand cmd = new OleDbCommand(insert, MyConn);
-                            cmd.Parameters.AddWithValue("@CurFromLong", ccFrom.getLongName());
-                            cmd.Parameters.AddWithValue("@CurFromShort", ccFrom.getShortName());
-                            cmd.Parameters.AddWithValue("@CurToLong", ccTo.getLongName());
-                            cmd.Parameters.AddWithValue("@CurToShort", ccTo.getShortName());
-                            cmd.Parameters.AddWithValue("@Rate", rate.getRate().ToString());
-                            cmd.Parameters.AddWithValue("@DateTime", rate.getTimeDate().ToString());
-                            cmd.ExecuteNonQuery();
-                            Successful = true;
-                            MyConn.Close();
+                            try
+                            {
+                                string insert = "INSERT INTO CurrencyConverter ([CurFromLong], [CurFromShort], [CurToLong], [CurToShort], [Rate], [DateTime]) VALUES (@CurFromLong, @CurFromShort, @CurToLong, @CurToShort, @Rate, @DateTime);";
+                                OleDbCommand cmd = new OleDbCommand(insert, MyConn);
+                                cmd.Parameters.AddWithValue("@CurFromLong", ccFrom.getLongName());
+                                cmd.Parameters.AddWithValue("@CurFromShort", ccFrom.getShortName());
+                                cmd.Parameters.AddWithValue("@CurToLong", ccTo.getLongName());
+                                cmd.Parameters.AddWithValue("@CurToShort", ccTo.getShortName());
+                                cmd.Parameters.AddWithValue("@Rate", rate.getRate().ToString());
+                                cmd.Parameters.AddWithValue("@DateTime", rate.getTimeDate().ToString());
+                                cmd.ExecuteNonQuery();
+                                Successful = true;
+                                MyConn.Close();
+                            }
+                            catch (Exception ex)
+                            {
+                                Debug.WriteLine(Environment.NewLine + ex.ToString() + Environment.NewLine);
+                                //returns false
+                            }
                         }
-                        catch(Exception ex)
+                        else
                         {
-                            Debug.WriteLine(Environment.NewLine + ex.ToString() + Environment.NewLine);
-                            //returns false
+                            try
+                            {
+                                string update = "UPDATE CurrencyConverter SET [Rate]=@Rate, [DateTime]=@DateTime WHERE CurFromShort LIKE '" + ccFrom.getShortName() + "' AND CurToShort LIKE '" + ccTo.getShortName() + "'";
+                                OleDbCommand cmd = new OleDbCommand(update, MyConn);
+                                cmd.Parameters.AddWithValue("@Rate", rate.getRate().ToString());
+                                cmd.Parameters.AddWithValue("@DateTime", rate.getTimeDate().ToString());
+                                cmd.ExecuteNonQuery();
+                                Successful = true;
+                                MyConn.Close();
+                            }
+                            catch (Exception ex)
+                            {
+                                Debug.WriteLine(Environment.NewLine + ex.ToString() + Environment.NewLine);
+                                //returns false
+                            }
                         }
                         break;
                     }
@@ -110,7 +131,6 @@ namespace CurrencyConverter
         public ArrayList getCurrencyNames()
         {
             ArrayList tempArray = new ArrayList();
-            ArrayList returnArray = new ArrayList();
             int Status = InitDatabase();
             switch (Status)
             {
@@ -125,17 +145,16 @@ namespace CurrencyConverter
                         {
                             CurrencyClass ccFrom = new CurrencyClass(reader["CurFromShort"].ToString(), reader["CurFromLong"].ToString());
                             CurrencyClass ccTo = new CurrencyClass(reader["CurToShort"].ToString(), reader["CurToLong"].ToString());
-                            tempArray.Add(ccFrom);
-                            tempArray.Add(ccTo);
+                            if (!tempArray.Contains(ccFrom))
+                            {
+                                tempArray.Add(ccFrom);
+                            }
+                            if (!tempArray.Contains(ccTo))
+                            {
+                                tempArray.Add(ccTo);
+                            } 
                         }
 
-                        foreach (CurrencyClass cc in tempArray)
-                        {
-                            if (!returnArray.Contains(cc))
-                            {
-                                returnArray.Add(cc);
-                            }
-                        }
                         MyConn.Close();
                         break;
                     }
@@ -150,7 +169,7 @@ namespace CurrencyConverter
                         break;
                     }
             }
-            return returnArray;
+            return tempArray;
         }
 
         //Check for database and attempts to connect to it. Returns int to define status. Creates database if non-existant
@@ -282,6 +301,22 @@ namespace CurrencyConverter
             {
                 Debug.WriteLine(Environment.NewLine + ex.ToString() + Environment.NewLine);
                 //Exception caught. Failed to connect to database
+                return false;
+            }
+        }
+        private bool checkForDuplicate(RateClass rate)
+        {
+            CurrencyClass ccFrom = rate.getFrom();
+            CurrencyClass ccTo = rate.getTo();
+            string CommandString = "Select * from CurrencyConverter where CurFromShort like '" + ccFrom.getShortName() + "' and CurToShort like '" + ccTo.getShortName() + "'";
+            OleDbCommand cmd = new OleDbCommand(CommandString, MyConn);
+            OleDbDataReader reader = cmd.ExecuteReader();
+            if (reader.HasRows)
+            {
+                return true;
+            }
+            else
+            {
                 return false;
             }
         }
