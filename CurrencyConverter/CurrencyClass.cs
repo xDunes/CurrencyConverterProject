@@ -24,5 +24,16 @@ namespace CurrencyConverter
         {
             return strLongName;
         }
+        public override bool Equals(object o)
+        {
+            if (o == null || o.GetType() != typeof(CurrencyClass))
+                return false;
+            CurrencyClass currency = (CurrencyClass)o;
+            return (currency.getLongName().Equals(this.strLongName) && currency.getShortName().Equals(this.strShortName));
+        }
+        public override int GetHashCode()
+        {
+            return (strLongName + strShortName).GetHashCode();
+        }
     }
 }
