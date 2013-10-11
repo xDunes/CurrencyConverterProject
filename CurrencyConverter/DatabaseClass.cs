@@ -33,12 +33,12 @@ namespace CurrencyConverter
                         {
                             string insert = "INSERT into CurrencyConverter (CurFromLong, CurFromShort, CurToLong, CurToShort, Rate, DateTime) VALUES (@CurFromLong, @CurFromShort, @CurToLong, @CurToShort, @Rate, @DateTime)";
                             OleDbCommand cmd = new OleDbCommand(insert, MyConn);
-                            cmd.Parameters.Add("@CurFromLong", ccFrom.getLongName());
-                            cmd.Parameters.Add("@CurFromShort", ccFrom.getShortName());
-                            cmd.Parameters.Add("@CurToLong", ccTo.getLongName());
-                            cmd.Parameters.Add("@CurToShort", ccTo.getShortName());
-                            cmd.Parameters.Add("@Rate", rate.getRate().ToString());
-                            cmd.Parameters.Add("@DateTime", rate.getTimeDate().ToString());
+                            cmd.Parameters.AddWithValue("@CurFromLong", ccFrom.getLongName());
+                            cmd.Parameters.AddWithValue("@CurFromShort", ccFrom.getShortName());
+                            cmd.Parameters.AddWithValue("@CurToLong", ccTo.getLongName());
+                            cmd.Parameters.AddWithValue("@CurToShort", ccTo.getShortName());
+                            cmd.Parameters.AddWithValue("@Rate", rate.getRate().ToString());
+                            cmd.Parameters.AddWithValue("@DateTime", rate.getTimeDate().ToString());
                             cmd.ExecuteNonQuery();
                             Successful = true;
                             MyConn.Close();
@@ -250,6 +250,7 @@ namespace CurrencyConverter
             }
             catch
             {
+
                 return false;
             }
         }
