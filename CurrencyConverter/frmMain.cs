@@ -18,7 +18,7 @@ namespace CurrencyConverter
         public frmMain()
         {
             InitializeComponent();
-        }
+        }//frmMain
 
         private void frmMain_Load(object sender, EventArgs e)
         {
@@ -28,13 +28,12 @@ namespace CurrencyConverter
             {
                 updateComboBoxes();
                 webParser.getAllConversionRates(alCurrencyNames);
-            }
+            }//if
             else
             {
-                MessageBox.Show("Error: Rates not currently available at this time.");
-            }
-            //webParser.queueAllConversionRates(alCurrencyNames);
-        }
+                MessageBox.Show("Error: Could not retrieve currency names.");
+            }//else
+        }//frmMain_Load
 
         private void btnConvert_Click(object sender, EventArgs e)
         {
@@ -45,13 +44,13 @@ namespace CurrencyConverter
             {
                 txtTo.Text = "" + (Convert.ToDouble(txtFrom.Text) * rate.getRate());
                 lblAsOf.Text = "As Of " + rate.getTimeDate().ToString();
-            }
+            }//if
             else
             {
                 MessageBox.Show("ERROR: Could not retrieve rate for " + ccFrom.getShortName() + " to " + ccTo.getShortName() + " conversion rate at this time!");
-            }
+            }//else
             
-        }
+        }//btnConvert_Click
         private void updateComboBoxes()
         {
             foreach (CurrencyClass currency in alCurrencyNames)
@@ -63,7 +62,7 @@ namespace CurrencyConverter
                 cmbTo.Items.Add(item);
                 cmbFrom.SelectedIndex = 0;
                 cmbTo.SelectedIndex = 0;
-            }
-        }
-    }
-}
+            }//foreach
+        }//updateComboBoxes
+    }//frmMain
+}//namespace
