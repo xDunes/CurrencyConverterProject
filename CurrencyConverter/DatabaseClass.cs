@@ -13,8 +13,11 @@ namespace CurrencyConverter
 {
     class DatabaseClass
     {
+
         private OleDbConnection MyConn;
-        private string path = @"Database path";//add database path later
+        static private string ProgramData = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData);
+        
+        private string path = ProgramData + "\\CurrencyConverter\\CurrencyDB.mdb";//add database path later
         public bool saveRate(RateClass rate)
         {
             bool Successful = false;
@@ -214,6 +217,11 @@ namespace CurrencyConverter
         //Creates Database
         private bool CreateDatabase()
         {
+            
+            if (!Directory.Exists(ProgramData + "\\CurrencyConverter"))
+            {
+                Directory.CreateDirectory(ProgramData + "\\CurrencyConverter");
+            }
             //Code to create Database
             Catalog cat = new Catalog();
             Table table = new Table();
