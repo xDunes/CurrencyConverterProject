@@ -31,7 +31,7 @@ namespace CurrencyConverter
             }
             else
             {
-                MessageBox.Show("error");
+                MessageBox.Show("Error: Rates not currently available at this time.");
             }
             //webParser.queueAllConversionRates(alCurrencyNames);
         }
@@ -48,7 +48,7 @@ namespace CurrencyConverter
             }
             else
             {
-                MessageBox.Show("ERROR:  Could not retrieve rate for " + ccFrom.getShortName() + " to " + ccTo.getShortName() + " conversion rate at this time!");
+                MessageBox.Show("ERROR: Could not retrieve rate for " + ccFrom.getShortName() + " to " + ccTo.getShortName() + " conversion rate at this time!");
             }
             
         }
