@@ -115,6 +115,14 @@ namespace CurrencyConverter
             {
                 rate = clsDB.getSingleConversionRate(ccFrom, ccTo);
             }
+            else
+            {
+                bool status = clsDB.saveRate(rate);
+                if (status == false)
+                {
+                    //database class will return false if errors occured. Need to handle here
+                }
+            }
             return rate;
         }
     }
