@@ -27,7 +27,6 @@ namespace CurrencyConverter
             if (alCurrencyNames.Count != 0)
             {
                 updateComboBoxes();
-                lblAsOf.Text = DateTime.Now.ToString();
                 webParser.getAllConversionRates(alCurrencyNames);
             }//if
             else

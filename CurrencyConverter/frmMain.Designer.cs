@@ -105,9 +105,9 @@
             this.lblAsOf.AutoSize = true;
             this.lblAsOf.Location = new System.Drawing.Point(382, 85);
             this.lblAsOf.Name = "lblAsOf";
-            this.lblAsOf.Size = new System.Drawing.Size(146, 13);
+            this.lblAsOf.Size = new System.Drawing.Size(36, 13);
             this.lblAsOf.TabIndex = 7;
-            this.lblAsOf.Text = "As Of 12/12/12 04:04:04 AM";
+            this.lblAsOf.Text = "As Of ";
             // 
             // frmMain
             // 
