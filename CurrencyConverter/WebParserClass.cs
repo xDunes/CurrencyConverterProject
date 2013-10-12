@@ -15,7 +15,6 @@ namespace CurrencyConverter
     class WebParserClass
     {
         DatabaseClass clsDB;
-        bool web = true;
         public WebParserClass()
         {
             ServicePointManager.DefaultConnectionLimit = 10000;
@@ -70,35 +69,18 @@ namespace CurrencyConverter
             
             foreach (CurrencyClass currencyFrom in alCurrencyNames)
             {
-                if (web == true)
+                foreach (CurrencyClass currencyTo in alCurrencyNames)
                 {
-                    foreach (CurrencyClass currencyTo in alCurrencyNames)
+                    if (!currencyFrom.getShortName().Equals(currencyTo.getShortName()) && dbStatus)
                     {
-                        if (!currencyFrom.getShortName().Equals(currencyTo.getShortName()) && dbStatus)
+                        RateClass rate = getSingleConversionRate(currencyFrom, currencyTo, false);
+                        if (rate != null)
                         {
-                            if (web == true)
-                            {
-                                RateClass rate = getSingleConversionRate(currencyFrom, currencyTo, false);
-                                if (rate != null)
-                                {
-                                    dbStatus = clsDB.saveRate(rate);
-                                    //Debug.WriteLine("test");
-                                }
-                            }
-                            else
-                            {
-                                break;
-                            }
+                            dbStatus = clsDB.saveRate(rate);
                         }
                     }
                 }
-                else
-                {
-                    break;
-                }
             }
-            
-            
         }
         public RateClass getSingleConversionRate(CurrencyClass ccFrom, CurrencyClass ccTo, bool useDB)
         {
@@ -125,15 +107,17 @@ namespace CurrencyConverter
                     }
                 }
             }
-            catch { web = false; }
-
-            if (rate == null)
+            catch { }
+            if (useDB)
             {
-                rate = clsDB.getSingleConversionRate(ccFrom, ccTo);
-            } 
-            else if (useDB)
-            {
-                clsDB.saveRate(rate);
+                if (rate == null)
+                {
+                    rate = clsDB.getSingleConversionRate(ccFrom, ccTo);
+                }
+                else
+                {
+                    clsDB.saveRate(rate);
+                }
             }
             return rate;
         }
