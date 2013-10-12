@@ -17,20 +17,22 @@ namespace CurrencyConverter
     class DatabaseClass
     {
 
-        private OleDbConnection MyConn;
-        static private string ProgramData = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + "\\CurrencyConverter";
-        private string path = ProgramData + "\\CurrencyDB.accdb";//add database path later
+        private OleDbConnection MyConn;//global var for database connection
+        static private string ProgramData = Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData) + "\\CurrencyConverter"; //Get path for ProgramDatabase
+        private string path = ProgramData + "\\CurrencyDB.accdb";
+
+        //Method used for saving rates into the database
         public bool saveRate(RateClass rate)
         {
             bool Successful = false;
             CurrencyClass ccFrom = rate.getFrom();
             CurrencyClass ccTo = rate.getTo();
-            int Status = InitDatabase();
+            int Status = InitDatabase();//Initializes Database Connection
             switch (Status)
             {
                 case 0: case 1: case 2:
                     {
-                        //Sucess
+                        //If entry does not exist insert it
                         if (checkForDuplicate(rate) == false)
                         {
                             try
@@ -49,10 +51,11 @@ namespace CurrencyConverter
                             }
                             catch (Exception ex)
                             {
-                                Debug.WriteLine(Environment.NewLine + ex.ToString() + Environment.NewLine);
+                                //Debug.WriteLine(Environment.NewLine + ex.ToString() + Environment.NewLine);
                                 //returns false
                             }
                         }
+                        //if entry does exist, update it
                         else
                         {
                             try
@@ -63,17 +66,17 @@ namespace CurrencyConverter
                                 cmd.Parameters.AddWithValue("@DateTime", rate.getTimeDate().ToString());
                                 cmd.ExecuteNonQuery();
                                 Successful = true;
-                                MyConn.Close();
+                                MyConn.Close();//Closes database connection
                             }
                             catch (Exception ex)
                             {
-                                Debug.WriteLine(Environment.NewLine + ex.ToString() + Environment.NewLine);
+                                //Debug.WriteLine(Environment.NewLine + ex.ToString() + Environment.NewLine);
                                 //returns false
                             }
                         }
                         break;
                     }
-                case 3: case 4: case 5:
+                case 3: case 4: case 5://used mainly for debugging, error reported can be expanded in future
                     {
                         //Errors. returns false
                         break;
@@ -86,15 +89,16 @@ namespace CurrencyConverter
             }
             return Successful;
         }
+        //Gets single conversion rate from the database
         public RateClass getSingleConversionRate(CurrencyClass ccFrom, CurrencyClass ccTo)
         {
             RateClass rate = null;
-            int Status = InitDatabase();
+            int Status = InitDatabase();//Initializes Database connection
             switch (Status)
             {
                 case 0: case 1: case 2:
                     {
-                        //Sucess
+                        //Sucessful connection
                         string CommandString = "Select * from CurrencyConverter where CurFromShort like '" + ccFrom.getShortName() + "' and CurToShort like '" + ccTo.getShortName() + "'";
                         OleDbCommand cmd = new OleDbCommand(CommandString, MyConn);
                         OleDbDataReader reader = cmd.ExecuteReader();
@@ -113,7 +117,7 @@ namespace CurrencyConverter
                             }
                             rate = new RateClass(ccFrom, ccTo, rateVal, dateAdded);
                         }
-                        MyConn.Close();
+                        MyConn.Close();//Closes database Connection
                         break;
                     }
                 case 3: case 4: case 5:
@@ -129,15 +133,16 @@ namespace CurrencyConverter
             }
             return rate;
         }
+        //Gets list of Currencies from the Database
         public ArrayList getCurrencyNames()
         {
             ArrayList tempArray = new ArrayList();
-            int Status = InitDatabase();
+            int Status = InitDatabase();//Initializes Database Connection
             switch (Status)
             {
                 case 0: case 1: case 2:
                     {
-                        //Sucess
+                        //Sucessful connection
                         string CommandString = "Select * from CurrencyConverter";
                         OleDbCommand cmd = new OleDbCommand(CommandString, MyConn);
                         OleDbDataReader reader = cmd.ExecuteReader();
@@ -215,7 +220,12 @@ namespace CurrencyConverter
                     if (returnCode != 4)
                     {
                         //Create new database and attempt to connect
-                        bool Created = CreateDatabase();
+                        bool Created = false;
+                        try
+                        {
+                            Created = CreateDatabase();
+                        }
+                        catch { }
                         if (Created == true)
                         {
                             ConnStatus = OpenDatabaseConn(ConnString);
@@ -232,15 +242,15 @@ namespace CurrencyConverter
                     }
                 }
             }
-            else
+            else//file does not exists, Creare it
             {
-                bool blCreated=false;
+                bool Created=false;
                 try
                 {
-                    blCreated = CreateDatabase();
+                    Created = CreateDatabase();
                 }
                 catch {}
-                if (blCreated)
+                if (Created)
                 {
                     ConnStatus = OpenDatabaseConn(ConnString);
                     if (ConnStatus == true)
@@ -319,6 +329,7 @@ namespace CurrencyConverter
                 return false;
             }
         }
+        //Checks to see if provided entry already exists in the Database
         private bool checkForDuplicate(RateClass rate)
         {
             CurrencyClass ccFrom = rate.getFrom();
