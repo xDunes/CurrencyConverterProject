@@ -18,22 +18,22 @@ namespace CurrencyConverter
             ccTo = to;
             dblRate = rate;
             dtDateTime = dt;
-        }
+        }//RateClass
         public CurrencyClass getFrom(){
 		    return ccFrom;
-	    }
+	    }//getFrom
 	    public CurrencyClass getTo(){
 		    return ccTo;
-	    }
+	    }//getTo
 	    public double getRate(){
 		    return dblRate;
-	    }
+	    }//getRate
 	    public DateTime getTimeDate(){
             return dtDateTime;
-	    }
+	    }//getTimeDate
         public string ToString()
         {
             return "From: " + ccFrom.ToString() + "  To: " + ccTo.ToString() + "  Rate: " + dblRate + "  Date: " + dtDateTime.ToString();
-        }
+        }//ToString
     }
-}
+}//CurrencyConverter

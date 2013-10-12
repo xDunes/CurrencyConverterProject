@@ -40,29 +40,29 @@ namespace CurrencyConverter
                     if (html.Contains("select name=from"))
                     {
                         parse = true;
-                    }
+                    }//if
                     else if (html.Contains("</select>") && parse)
                     {
                         parse = false;
-                    }
+                    }//elseif
                     else if (parse)
                     {
                         Match matchOption = regexOPTION.Match(html);
                         CurrencyClass currency = new CurrencyClass(matchOption.Groups[1].Value, matchOption.Groups[2].Value);
                         tempArray.Add(currency);
-                    }
-                }
-            }
+                    }//elseif
+                }//while
+            }//try
             catch { }
 		    if (tempArray.Count==0){
     			tempArray = clsDB.getCurrencyNames();
-		    }
+		    }//if
 		    return tempArray;
-	    }
+	    }//getCurrencyNames
         public void getAllConversionRates(ArrayList alCurrencyNames){
             Thread thread = new Thread(() => threadAllConversionRates(alCurrencyNames));
             thread.Start();
-		}
+		}//getAllConversionRates
         private void threadAllConversionRates(ArrayList alCurrencyNames)
         {
             bool dbStatus = true;
@@ -77,11 +77,11 @@ namespace CurrencyConverter
                         if (rate != null)
                         {
                             dbStatus = clsDB.saveRate(rate);
-                        }
-                    }
-                }
-            }
-        }
+                        }//if
+                    }//if
+                }//foreach
+            }//foreach
+        }//threadAllConversionRates
         public RateClass getSingleConversionRate(CurrencyClass ccFrom, CurrencyClass ccTo, bool useDB)
         {
             RateClass rate=null;
@@ -103,23 +103,23 @@ namespace CurrencyConverter
                         {
                             Debug.WriteLine("Rate from " + ccFrom.getShortName() + " to " + ccTo.getShortName() + " is " + matchRate.Groups[1].Value);
                             rate = new RateClass(ccFrom, ccTo, Convert.ToDouble(matchRate.Groups[1].Value), DateTime.Now);
-                        }
-                    }
-                }
-            }
+                        }//if
+                    }//if
+                }//while
+            }//try
             catch { }
             if (useDB)
             {
                 if (rate == null)
                 {
                     rate = clsDB.getSingleConversionRate(ccFrom, ccTo);
-                }
+                }//if
                 else
                 {
                     clsDB.saveRate(rate);
-                }
-            }
+                }//else
+            }//if
             return rate;
-        }
-    }
-}
+        }//getSingleConversionRate
+    }//WebParserClass
+}//CurrencyConverter
