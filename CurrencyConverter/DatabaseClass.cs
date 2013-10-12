@@ -22,7 +22,6 @@ namespace CurrencyConverter
         private string path = ProgramData + "\\CurrencyDB.accdb";//add database path later
         public bool saveRate(RateClass rate)
         {
-            MessageBox.Show("saveRate started!");
             bool Successful = false;
             CurrencyClass ccFrom = rate.getFrom();
             CurrencyClass ccTo = rate.getTo();
@@ -85,7 +84,6 @@ namespace CurrencyConverter
                         break;
                     }
             }
-            MessageBox.Show("saveRate Finished!");
             return Successful;
         }
         public RateClass getSingleConversionRate(CurrencyClass ccFrom, CurrencyClass ccTo)
@@ -191,7 +189,6 @@ namespace CurrencyConverter
          * */
         private int InitDatabase()
         {
-            MessageBox.Show("InitDatabase Started!");
             bool ConnStatus = false; //true if connected, false if connection failed
             int returnCode = 0;
             String ConnString = @"Provider=Microsoft.Jet.OLEDB.4.0;Data Source=" + path + ";"; 
@@ -237,19 +234,12 @@ namespace CurrencyConverter
             }
             else
             {
-                MessageBox.Show("Should call create database now!");
                 bool blCreated=false;
                 try
                 {
-
-                    
                     blCreated = CreateDatabase();
                 }
-                catch (Exception ex)
-                {
-                    MessageBox.Show(ex.Message);
-                }
-                MessageBox.Show("Done calling Create Database Now!");
+                catch {}
                 if (blCreated)
                 {
                     ConnStatus = OpenDatabaseConn(ConnString);
@@ -264,23 +254,19 @@ namespace CurrencyConverter
                     returnCode = 3;
                 }
             }
-            MessageBox.Show("InitDatabase Finished!");
             return returnCode;
         }
         //Creates Database
         private bool CreateDatabase()
         {
-            MessageBox.Show("Create Database Started!");
             
             if (!Directory.Exists(ProgramData))
             {
-                try {
+                try
+                {
                     Directory.CreateDirectory(ProgramData);
                 }
-                catch (Exception ex)
-                { 
-                    MessageBox.Show(ex.Message);
-                }
+                catch { }
             }
 
             
@@ -308,13 +294,11 @@ namespace CurrencyConverter
                 {
                     MyConn.Close();
                 }
-                MessageBox.Show("Create Database Finished!");
                 return true;
             }
             catch (Exception ex)
             {
                 Debug.WriteLine(Environment.NewLine + ex.ToString() + Environment.NewLine);
-                MessageBox.Show("Create Database Finished! (failed)");
                 return false;
             }
             
