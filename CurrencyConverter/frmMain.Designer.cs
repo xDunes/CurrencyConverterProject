@@ -40,18 +40,24 @@
             // 
             // cmbFrom
             // 
+            this.cmbFrom.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbFrom.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cmbFrom.FormattingEnabled = true;
             this.cmbFrom.Location = new System.Drawing.Point(12, 51);
             this.cmbFrom.Name = "cmbFrom";
-            this.cmbFrom.Size = new System.Drawing.Size(200, 21);
+            this.cmbFrom.Size = new System.Drawing.Size(200, 22);
+            this.cmbFrom.Sorted = true;
             this.cmbFrom.TabIndex = 0;
             // 
             // cmbTo
             // 
+            this.cmbTo.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmbTo.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cmbTo.FormattingEnabled = true;
             this.cmbTo.Location = new System.Drawing.Point(299, 51);
             this.cmbTo.Name = "cmbTo";
-            this.cmbTo.Size = new System.Drawing.Size(200, 21);
+            this.cmbTo.Size = new System.Drawing.Size(200, 22);
+            this.cmbTo.Sorted = true;
             this.cmbTo.TabIndex = 1;
             // 
             // lblFrom

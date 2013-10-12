@@ -14,6 +14,6 @@ namespace CurrencyConverter
         public override string ToString()
         {
             return Text;
-        }
-    }
-}
+        }//ToString
+    }//ComboboxItem
+}//CurrencyConverter

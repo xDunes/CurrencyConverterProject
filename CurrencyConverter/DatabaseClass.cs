@@ -9,6 +9,7 @@ using ADOX;
 using System.IO;
 using System.Diagnostics;
 using System.Threading;
+using System.Windows.Forms;
 
 
 namespace CurrencyConverter
@@ -192,6 +193,7 @@ namespace CurrencyConverter
             int returnCode = 0;
             String ConnString = @"Provider=Microsoft.Jet.OLEDB.4.0;Data Source=" + path + ";"; 
             //Check to see if database file exists
+            
             if (File.Exists(path))
             {
                 ConnStatus = OpenDatabaseConn(ConnString);
@@ -232,8 +234,13 @@ namespace CurrencyConverter
             }
             else
             {
-                bool Created = CreateDatabase();
-                if (Created == true)
+                bool blCreated=false;
+                try
+                {
+                    blCreated = CreateDatabase();
+                }
+                catch {}
+                if (blCreated)
                 {
                     ConnStatus = OpenDatabaseConn(ConnString);
                     if (ConnStatus == true)
@@ -255,9 +262,14 @@ namespace CurrencyConverter
             
             if (!Directory.Exists(ProgramData))
             {
-
-                Directory.CreateDirectory(ProgramData);
+                try
+                {
+                    Directory.CreateDirectory(ProgramData);
+                }
+                catch { }
             }
+
+            
             //Code to create Database
             
             Table table = new Table();
@@ -289,6 +301,7 @@ namespace CurrencyConverter
                 Debug.WriteLine(Environment.NewLine + ex.ToString() + Environment.NewLine);
                 return false;
             }
+            
         }
         //Attempts to open database connection. Returns true if successful. 
         private bool OpenDatabaseConn(string ConnString)
