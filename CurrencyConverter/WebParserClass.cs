@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+using System.Threading;
 using System.Collections;
 using System.Net;
 using System.IO;
@@ -56,7 +56,6 @@ namespace CurrencyConverter
 		    if (tempArray.Count==0){
     			tempArray = clsDB.getCurrencyNames();
 		    }
-            Debug.WriteLine(tempArray.Count + " from webparser");
 		    return tempArray;
 	    }
         public void getAllConversionRates(ArrayList alCurrencyNames){
@@ -101,7 +100,7 @@ namespace CurrencyConverter
                         Match matchRate = regexRate.Match(html);
                         if (matchRate.Success)
                         {
-                            //Debug.WriteLine("Rate from " + ccFrom.getShortName() + " to " + ccTo.getShortName() + " is " + matchRate.Groups[1].Value);
+                            Debug.WriteLine("Rate from " + ccFrom.getShortName() + " to " + ccTo.getShortName() + " is " + matchRate.Groups[1].Value);
                             rate = new RateClass(ccFrom, ccTo, Convert.ToDouble(matchRate.Groups[1].Value), DateTime.Now);
                         }
                     }
