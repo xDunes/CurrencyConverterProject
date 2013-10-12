@@ -255,6 +255,7 @@ namespace CurrencyConverter
             
             if (!Directory.Exists(ProgramData))
             {
+
                 Directory.CreateDirectory(ProgramData);
             }
             //Code to create Database
