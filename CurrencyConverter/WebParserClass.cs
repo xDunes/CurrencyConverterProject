@@ -15,6 +15,7 @@ namespace CurrencyConverter
     class WebParserClass
     {
         DatabaseClass clsDB;
+        bool web = true;
         public WebParserClass()
         {
             ServicePointManager.DefaultConnectionLimit = 10000;
@@ -26,6 +27,7 @@ namespace CurrencyConverter
 		    ArrayList tempArray=new ArrayList();
             try
             {
+                
                 WebRequest request = WebRequest.Create("https://www.google.com/finance/converter");
                 WebResponse response = request.GetResponse();
                 Stream data = response.GetResponseStream();
@@ -53,8 +55,9 @@ namespace CurrencyConverter
             }
             catch { }
 		    if (tempArray.Count==0){
-    			clsDB.getCurrencyNames();
+    			tempArray = clsDB.getCurrencyNames();
 		    }
+            Debug.WriteLine(tempArray.Count + " from webparser");
 		    return tempArray;
 	    }
         public void getAllConversionRates(ArrayList alCurrencyNames){
@@ -64,18 +67,37 @@ namespace CurrencyConverter
         private void threadAllConversionRates(ArrayList alCurrencyNames)
         {
             bool dbStatus = true;
+            
             foreach (CurrencyClass currencyFrom in alCurrencyNames)
             {
+                if (web == true)
+                {
                     foreach (CurrencyClass currencyTo in alCurrencyNames)
                     {
                         if (!currencyFrom.getShortName().Equals(currencyTo.getShortName()) && dbStatus)
                         {
-                            RateClass rate = getSingleConversionRate(currencyFrom, currencyTo, false);
-                            if (rate != null)
+                            if (web == true)
+                            {
+                                RateClass rate = getSingleConversionRate(currencyFrom, currencyTo, false);
+                                if (rate != null)
+                                {
                                     dbStatus = clsDB.saveRate(rate);
+                                    //Debug.WriteLine("test");
+                                }
+                            }
+                            else
+                            {
+                                break;
+                            }
                         }
                     }
+                }
+                else
+                {
+                    break;
+                }
             }
+            
             
         }
         public RateClass getSingleConversionRate(CurrencyClass ccFrom, CurrencyClass ccTo, bool useDB)
@@ -103,7 +125,7 @@ namespace CurrencyConverter
                     }
                 }
             }
-            catch { }
+            catch { web = false; }
 
             if (rate == null)
             {

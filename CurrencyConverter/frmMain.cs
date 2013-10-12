@@ -27,6 +27,7 @@ namespace CurrencyConverter
             if (alCurrencyNames.Count != 0)
             {
                 updateComboBoxes();
+                lblAsOf.Text = DateTime.Now.ToString();
                 webParser.getAllConversionRates(alCurrencyNames);
             }//if
             else
@@ -40,6 +41,7 @@ namespace CurrencyConverter
             CurrencyClass ccFrom = new CurrencyClass((string)((ComboboxItem)cmbFrom.SelectedItem).Value, ((ComboboxItem)cmbFrom.SelectedItem).Text);
             CurrencyClass ccTo = new CurrencyClass((string)((ComboboxItem)cmbTo.SelectedItem).Value, ((ComboboxItem)cmbTo.SelectedItem).Text);
             RateClass rate = webParser.getSingleConversionRate(ccFrom, ccTo, true);
+            Debug.WriteLine(rate.ToString());
             if (rate != null)
             {
                 txtTo.Text = "" + (Convert.ToDouble(txtFrom.Text) * rate.getRate());

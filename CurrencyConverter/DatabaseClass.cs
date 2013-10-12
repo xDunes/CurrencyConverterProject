@@ -169,6 +169,7 @@ namespace CurrencyConverter
                         break;
                     }
             }
+            Debug.WriteLine(tempArray.Count);
             return tempArray;
         }
 
