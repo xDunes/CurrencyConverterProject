@@ -56,9 +56,8 @@ namespace CurrencyConverter
                     cmd.ExecuteNonQuery();
                     Successful = true;
                 }//endtry
-                catch (Exception ex)
+                catch
                 {
-                    Debug.WriteLine(Environment.NewLine + ex.ToString() + Environment.NewLine);
                     //returns false
                 }//endcatch
             }//endelse
@@ -151,7 +150,7 @@ namespace CurrencyConverter
                     {
                         File.Delete(path);
                     }//endtry
-                    catch (Exception ex)
+                    catch
                     {
                         returnCode = 4;
                     }//endcatch
@@ -260,7 +259,7 @@ namespace CurrencyConverter
                 }
                 return true;
             }//endtry
-            catch (Exception ex)
+            catch
             {
                 //Debug.WriteLine(Environment.NewLine + ex.ToString() + Environment.NewLine);
                 return false;
@@ -277,7 +276,7 @@ namespace CurrencyConverter
                 MyConn.Open();
                 return true;
             }//endtry
-            catch (Exception ex)
+            catch
             {
                 //Exception caught. Failed to connect to database
                 return false;
@@ -304,7 +303,7 @@ namespace CurrencyConverter
                     return false;
                 }
             }
-            catch (Exception ex)
+            catch
             {
                 return false;
             }

@@ -33,7 +33,7 @@ namespace CurrencyConverter
             }//if
             else
             {
-                MessageBox.Show("Error: Could not retrieve currency names.");
+                MessageBox.Show("Could not retrieve currency names.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }//else
         }//frmMain_Load
 
@@ -41,7 +41,8 @@ namespace CurrencyConverter
         {
             if (cmbFrom.SelectedItem == cmbTo.SelectedItem)
             {
-                MessageBox.Show("From and To currencies cannot be the same.");
+                txtTo.Text = txtFrom.Text;
+                lblAsOf.Text = "As Of " + DateTime.Now;
             }
             else
             {
@@ -56,10 +57,11 @@ namespace CurrencyConverter
                 }//if
                 else
                 {
-                    MessageBox.Show("ERROR: Could not retrieve rate for " + ccFrom.getShortName() + " to " + ccTo.getShortName() + " conversion rate at this time!");
+                    MessageBox.Show("Could not retrieve conversion rate for " + ccFrom.getShortName() + " to " + ccTo.getShortName() + " at this time!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }//else
             }
         }//btnConvert_Click
+
         private void updateComboBoxes()
         {
             foreach (CurrencyClass currency in alCurrencyNames)
