@@ -24,7 +24,7 @@ namespace CurrencyConverter
         private void frmMain_Load(object sender, EventArgs e)
         {
             webParser = new WebParserClass();
-            int test = webParser.openDB();
+            int dbStatus = webParser.openDB();
             alCurrencyNames = webParser.getCurrencyNames();
             if (alCurrencyNames.Count != 0)
             {

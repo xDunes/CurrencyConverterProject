@@ -41,11 +41,9 @@ namespace CurrencyConverter
                     cmd.Parameters.AddWithValue("@DateTime", rate.getTimeDate().ToString());
                     cmd.ExecuteNonQuery();
                     Successful = true;
-                    MyConn.Close();
                 }
                 catch (Exception ex)
                 {
-                    //Debug.WriteLine(Environment.NewLine + ex.ToString() + Environment.NewLine);
                     //returns false
                 }
             }
@@ -60,11 +58,10 @@ namespace CurrencyConverter
                     cmd.Parameters.AddWithValue("@DateTime", rate.getTimeDate().ToString());
                     cmd.ExecuteNonQuery();
                     Successful = true;
-                    MyConn.Close();//Closes database connection
                 }
                 catch (Exception ex)
                 {
-                    //Debug.WriteLine(Environment.NewLine + ex.ToString() + Environment.NewLine);
+                    Debug.WriteLine(Environment.NewLine + ex.ToString() + Environment.NewLine);
                     //returns false
                 }
             }
@@ -305,7 +302,6 @@ namespace CurrencyConverter
             catch (Exception ex)
             {
                 return false;
-                Debug.WriteLine(ex.ToString());
             }
         }
     }

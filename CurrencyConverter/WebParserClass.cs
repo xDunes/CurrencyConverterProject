@@ -15,6 +15,7 @@ namespace CurrencyConverter
     class WebParserClass
     {
         DatabaseClass clsDB;
+        int dbStat = -1;
         Thread thread;
         public WebParserClass()
         {
@@ -29,7 +30,7 @@ namespace CurrencyConverter
 		    ArrayList tempArray=new ArrayList();
             try
             {
-                
+
                 WebRequest request = WebRequest.Create("https://www.google.com/finance/converter");
                 WebResponse response = request.GetResponse();
                 Stream data = response.GetResponseStream();
@@ -55,9 +56,13 @@ namespace CurrencyConverter
                     }//elseif
                 }//while
             }//try
-            catch { }
+            catch { }//website not reachable 
 		    if (tempArray.Count==0){
-    			tempArray = clsDB.getCurrencyNames();
+                try
+                {
+                    tempArray = clsDB.getCurrencyNames();
+                }
+                catch { }//Database not reachable
 		    }//if
 		    return tempArray;
 	    }//getCurrencyNames
@@ -65,16 +70,7 @@ namespace CurrencyConverter
             thread = new Thread(() => threadAllConversionRates(alCurrencyNames));
             thread.Start();
 		}//getAllConversionRates
-        public int openDB()
-        {
-            int test = clsDB.InitDatabase();
-            return test;
-        }
-        public void closeDB()
-        {
-            thread.Abort();
-            clsDB.CloseDBConn();
-        }
+        
         private void threadAllConversionRates(ArrayList alCurrencyNames)
         {
             bool dbStatus = true;
@@ -94,6 +90,7 @@ namespace CurrencyConverter
                 }//foreach
             }//foreach
         }//threadAllConversionRates
+
         public RateClass getSingleConversionRate(CurrencyClass ccFrom, CurrencyClass ccTo, bool useDB)
         {
             RateClass rate=null;
@@ -133,5 +130,17 @@ namespace CurrencyConverter
             }//if
             return rate;
         }//getSingleConversionRate
+
+        public int openDB()
+        {
+            dbStat = clsDB.InitDatabase();
+            return dbStat;
+        }
+        public void closeDB()
+        {
+            thread.Abort();
+            clsDB.CloseDBConn();
+        }
+
     }//WebParserClass
 }//CurrencyConverter
