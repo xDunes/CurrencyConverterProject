@@ -35,7 +35,7 @@ namespace CurrencyConverter
         {
             return (strLongName + strShortName).GetHashCode();
         }//GetHashCode
-        public string ToString()
+        public override string ToString()
         {
             string returnString = "ShortName: " + strShortName + "  LongName: " + strLongName;
             return returnString;

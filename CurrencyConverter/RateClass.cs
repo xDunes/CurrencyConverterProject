@@ -31,7 +31,7 @@ namespace CurrencyConverter
 	    public DateTime getTimeDate(){
             return dtDateTime;
 	    }//getTimeDate
-        public string ToString()
+        public override string ToString()
         {
             return "From: " + ccFrom.ToString() + "  To: " + ccTo.ToString() + "  Rate: " + dblRate + "  Date: " + dtDateTime.ToString();
         }//ToString

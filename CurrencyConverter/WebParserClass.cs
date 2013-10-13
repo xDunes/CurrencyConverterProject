@@ -8,7 +8,6 @@ using System.Net;
 using System.IO;
 using System.Text.RegularExpressions;
 using System.Diagnostics;
-using System.Threading;
 using System.Windows.Forms;
 
 namespace CurrencyConverter
@@ -16,11 +15,14 @@ namespace CurrencyConverter
     class WebParserClass
     {
         DatabaseClass clsDB;
+        Thread thread;
         public WebParserClass()
         {
             ServicePointManager.DefaultConnectionLimit = 10000;
             clsDB = new DatabaseClass();
         }//WebParserClass
+
+
         public ArrayList getCurrencyNames()
         {
             Regex regexOPTION=new Regex("</?\\w+\\s+\\w+=\"(.*)\">(.*)</\\w+>");
@@ -60,9 +62,19 @@ namespace CurrencyConverter
 		    return tempArray;
 	    }//getCurrencyNames
         public void getAllConversionRates(ArrayList alCurrencyNames){
-            Thread thread = new Thread(() => threadAllConversionRates(alCurrencyNames));
+            thread = new Thread(() => threadAllConversionRates(alCurrencyNames));
             thread.Start();
 		}//getAllConversionRates
+        public int openDB()
+        {
+            int test = clsDB.InitDatabase();
+            return test;
+        }
+        public void closeDB()
+        {
+            thread.Abort();
+            clsDB.CloseDBConn();
+        }
         private void threadAllConversionRates(ArrayList alCurrencyNames)
         {
             bool dbStatus = true;

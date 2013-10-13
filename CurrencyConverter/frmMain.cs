@@ -9,6 +9,7 @@ using System.Threading;
 using System.Windows.Forms;
 using System.Collections;
 using System.Diagnostics;
+using System.Text.RegularExpressions;
 namespace CurrencyConverter
 {
     public partial class frmMain : Form
@@ -23,6 +24,7 @@ namespace CurrencyConverter
         private void frmMain_Load(object sender, EventArgs e)
         {
             webParser = new WebParserClass();
+            int test = webParser.openDB();
             alCurrencyNames = webParser.getCurrencyNames();
             if (alCurrencyNames.Count != 0)
             {
@@ -37,20 +39,26 @@ namespace CurrencyConverter
 
         private void btnConvert_Click(object sender, EventArgs e)
         {
-            CurrencyClass ccFrom = new CurrencyClass((string)((ComboboxItem)cmbFrom.SelectedItem).Value, ((ComboboxItem)cmbFrom.SelectedItem).Text);
-            CurrencyClass ccTo = new CurrencyClass((string)((ComboboxItem)cmbTo.SelectedItem).Value, ((ComboboxItem)cmbTo.SelectedItem).Text);
-            RateClass rate = webParser.getSingleConversionRate(ccFrom, ccTo, true);
-            Debug.WriteLine(rate.ToString());
-            if (rate != null)
+            if (cmbFrom.SelectedItem == cmbTo.SelectedItem)
             {
-                txtTo.Text = "" + (Convert.ToDouble(txtFrom.Text) * rate.getRate());
-                lblAsOf.Text = "As Of " + rate.getTimeDate().ToString();
-            }//if
+                MessageBox.Show("From and To currencies cannot be the same.");
+            }
             else
             {
-                MessageBox.Show("ERROR: Could not retrieve rate for " + ccFrom.getShortName() + " to " + ccTo.getShortName() + " conversion rate at this time!");
-            }//else
-            
+                CurrencyClass ccFrom = new CurrencyClass((string)((ComboboxItem)cmbFrom.SelectedItem).Value, ((ComboboxItem)cmbFrom.SelectedItem).Text);
+                CurrencyClass ccTo = new CurrencyClass((string)((ComboboxItem)cmbTo.SelectedItem).Value, ((ComboboxItem)cmbTo.SelectedItem).Text);
+                RateClass rate = webParser.getSingleConversionRate(ccFrom, ccTo, true);
+                Debug.WriteLine(rate.ToString());
+                if (rate != null)
+                {
+                    txtTo.Text = "" + (Convert.ToDouble(txtFrom.Text) * rate.getRate());
+                    lblAsOf.Text = "As Of " + rate.getTimeDate().ToString();
+                }//if
+                else
+                {
+                    MessageBox.Show("ERROR: Could not retrieve rate for " + ccFrom.getShortName() + " to " + ccTo.getShortName() + " conversion rate at this time!");
+                }//else
+            }
         }//btnConvert_Click
         private void updateComboBoxes()
         {
@@ -64,6 +72,11 @@ namespace CurrencyConverter
                 cmbFrom.SelectedIndex = 0;
                 cmbTo.SelectedIndex = 0;
             }//foreach
+        }
+
+        private void frmMain_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            webParser.closeDB();
         }//updateComboBoxes
     }//frmMain
 }//namespace
