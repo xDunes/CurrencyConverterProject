@@ -95,6 +95,7 @@
             this.txtFrom.TabIndex = 5;
             this.txtFrom.Text = "1";
             this.txtFrom.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
+            this.txtFrom.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.txtFrom_KeyPress);
             // 
             // btnConvert
             // 
